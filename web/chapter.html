@@ -28,11 +28,11 @@
                 </div>
                 <div id="funcbtn" style="text-align: center">
                     <br/>
-                    <h5>
+                    <h4>
                     <button id="pre" class="btn btn-link" v-on:click="gopre">上一章</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <a  class="btn btn-link" v-bind:href="mulu">目录</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <button id="next" class="btn btn-link" v-on:click="gonext">下一章</button>
-                    </h5>
+                    </h4>
                     <br/>
                 </div>
             </div>
@@ -44,12 +44,16 @@
     </div>
     <script>
 
-        function updateContent(response) {
+        function updateContent(response){
             if (response.data.nextChapter == '0') {
                 $("#next").hide();
+            }else {
+                $("#next").show();
             }
             if (response.data.preChapter == '0') {
                 $("#pre").hide();
+            }else {
+                $("#pre").show();
             }
             chapter.preChapter=response.data.preChapter;
             chapter.nextChapter=response.data.nextChapter;
