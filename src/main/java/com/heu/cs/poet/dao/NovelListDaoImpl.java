@@ -60,6 +60,7 @@ public class NovelListDaoImpl extends BaseDao implements NovelListDao {
     @Override
     public void updateHistory(String dbName,String chapterId,String history) {
         String update="UPDATE novellist SET history='"+history+"', historyId="+chapterId+" where dbName='"+dbName+"'";
+        System.out.println("更新历史记录："+history);
         this.executeUpdate(update,null);
     }
 

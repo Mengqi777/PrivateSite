@@ -20,7 +20,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -37,6 +39,14 @@ public class NovelApi {
 
     @Context
     HttpServletResponse response;
+
+
+    @GET
+    @Produces("text/html;charset=utf-8")
+    public String novel() {
+        NovelListDao novelListDao = new NovelListDaoImpl();
+        return   novelListDao.toJson(novelListDao.queryNovelList());
+    }
 
     @GET
     @Path("index")
@@ -56,7 +66,6 @@ public class NovelApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -95,16 +104,19 @@ public class NovelApi {
         novelListDao.updateHistory(dbNme,id,chapterName);
         response.setContentType("text/html;charset=UTF-8");
         String root = System.getProperty("user.dir") + File.separator + "/web";
-        System.out.println("====rootpath:" + root);
         FileResourceLoader resourceLoader = new FileResourceLoader(root, "utf-8");
         try {
             Configuration cfg = Configuration.defaultConfiguration();
             GroupTemplate gt = new GroupTemplate(resourceLoader, cfg);
             Template t = gt.getTemplate("chapter.html");
+            String content=chapterDao.queryChapter(dbNme,id).getContent();
+            content=content.replaceAll("\r","");
+            content=content.replaceAll("\n","");
+            System.out.println(content.contains("\r"));
             t.binding("preChapter",chapterDao.queryPreChapter(dbNme, id).getChapterId());
             t.binding("nextChapter",chapterDao.queryNextChapter(dbNme, id).getChapterId());
             t.binding("chapterName",chapterName);
-            t.binding("content",chapterDao.queryChapter(dbNme,id).getContent());
+            t.binding("content",content);
             t.binding("chapterId",chapterDao.queryChapter(dbNme,id).getChapterId());
             t.binding("dbName",dbNme);
             t.renderTo(response.getWriter());
@@ -113,6 +125,30 @@ public class NovelApi {
         }
     }
 
+
+    @GET
+    @Path("{dbName}/go/{id}")
+    @Produces("text/plain;charset=utf-8")
+    public String readaxios(@PathParam("dbName") String dbNme,
+                     @PathParam("id") String id) {
+
+        ChapterDao chapterDao=new ChapterDaoImpl();
+        String chapterName=chapterDao.queryChapter(dbNme,id).getChapterName();
+        NovelListDao novelListDao=new NovelListDaoImpl();
+        novelListDao.updateHistory(dbNme,id,chapterName);
+        Map<String,String> map=new HashMap<>();
+        map.put("preChapter",chapterDao.queryPreChapter(dbNme, id).getChapterId()+"");
+        map.put("nextChapter",chapterDao.queryNextChapter(dbNme, id).getChapterId()+"");
+        map.put("chapterName",chapterName);
+        String content=chapterDao.queryChapter(dbNme,id).getContent();
+        content=content.replaceAll("\r","");
+        content=content.replaceAll("\n","");
+        map.put("content",content);
+        map.put("chapterId",chapterDao.queryChapter(dbNme,id).getChapterId()+"");
+        map.put("dbName",dbNme);
+        response.setContentType("text/html;charset=UTF-8");
+        return new Gson().toJson(map,Map.class);
+    }
 
 
 

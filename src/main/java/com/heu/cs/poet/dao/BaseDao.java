@@ -18,7 +18,7 @@ public class BaseDao {
     //用户名
     private String user = "root";
     //用户密码
-    private String pwd = "1234";
+    private String pwd = "123";
     //数据库链接对象
     private java.sql.Connection conn;
     //数据库命令执行对象
@@ -90,6 +90,7 @@ public class BaseDao {
             e.printStackTrace();
         }finally{
             //6、释放资源
+
             this.close();
         }
         return result;
