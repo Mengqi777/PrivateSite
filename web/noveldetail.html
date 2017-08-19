@@ -34,16 +34,12 @@
 </div>
 <script>
 
-     chapters=(JSON.parse('${chapters}'));
+
     var chapter = new Vue({
         el: '#chapter',
         data: {
             dbName:'${dbName}',
             chapters: JSON.parse('${chapters}')
-        },
-        methods: {
-            getSelectName: function () {
-            }
         }
     });
 

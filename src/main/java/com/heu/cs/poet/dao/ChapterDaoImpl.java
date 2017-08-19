@@ -6,6 +6,8 @@ import com.heu.cs.poet.pojo.Chapter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ChapterDaoImpl extends BaseDao implements ChapterDao{
@@ -20,7 +22,6 @@ public class ChapterDaoImpl extends BaseDao implements ChapterDao{
             while (rs.next()){
                 int chapterId=rs.getInt("uuid");
                 String chapterName=rs.getString("chapter");
-                System.out.println(chapterName);
                 Chapter chapter=new Chapter(chapterId,chapterName);
                 chapters.add(chapter);
             }
@@ -29,7 +30,7 @@ public class ChapterDaoImpl extends BaseDao implements ChapterDao{
         }finally {
             this.close();
         }
-
+        Collections.reverse(chapters);
         return new Gson().toJson(chapters,List.class);
 
     }
@@ -37,7 +38,6 @@ public class ChapterDaoImpl extends BaseDao implements ChapterDao{
     @Override
     public Chapter queryChapter(String novelDBName, String chapterId) {
         String query="select chapter,content from "+novelDBName+" where uuid="+chapterId;
-        System.out.println(query);
         ResultSet rs=this.executeQuery(query,null);
         Chapter chapter=new Chapter();
         try{
@@ -57,7 +57,6 @@ public class ChapterDaoImpl extends BaseDao implements ChapterDao{
     @Override
     public Chapter queryPreChapter(String novelDBName, String chapterId) {
         String query="select uuid,chapter from "+novelDBName+" where uuid = (select max(uuid) from "+novelDBName+" where uuid <"+chapterId+")";
-        System.out.println(query);
         ResultSet rs=this.executeQuery(query,null);
         Chapter chapter=new Chapter();
         try{
@@ -71,14 +70,12 @@ public class ChapterDaoImpl extends BaseDao implements ChapterDao{
         }finally {
             this.close();
         }
-        System.out.println(new Gson().toJson(chapter,Chapter.class));
         return chapter;
     }
 
     @Override
     public Chapter queryNextChapter(String novelDBName, String chapterId) {
         String query="select uuid,chapter from "+novelDBName+" where uuid = (select min(uuid) from "+novelDBName+" where uuid >"+chapterId+")";
-        System.out.println(query);
         ResultSet rs=this.executeQuery(query,null);
         Chapter chapter=new Chapter();
         try{
