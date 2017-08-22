@@ -7,6 +7,7 @@ import com.heu.cs.poet.dao.NovelListDao;
 import com.heu.cs.poet.dao.NovelListDaoImpl;
 import com.heu.cs.poet.pojo.Chapter;
 import com.heu.cs.poet.pojo.Novel;
+import jdk.nashorn.internal.ir.debug.ASTWriter;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
@@ -66,6 +67,17 @@ public class NovelApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    @POST
+    @Path("test")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public String test(@FormParam("name")String name, @FormParam("age")String age){
+        System.out.println("name："+name);
+        System.out.println("age:"+age);
+        return "OK Test";
     }
 
 
