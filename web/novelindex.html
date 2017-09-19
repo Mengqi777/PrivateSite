@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" xmlns:v-bind="http://java.sun.com/jsf/composite">
 <head>
     <meta charset="UTF-8">
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             <tr v-for="novel in novellist">
-                <td><a v-bind:href="['/web/novel/'+novel.dbName]" >{{novel.name}}</a></td>
+                <td><img style="height:100px;width:100px" v-bind:src="[novel.fmimg]"><br/><a v-bind:href="['/web/novel/'+novel.dbName]" >{{novel.name}}</a></td>
                 <td><a v-bind:href="['/web/novel/'+novel.dbName+'/'+novel.historyId]">{{novel.history}}</a></td>
             </tr>
             </tbody>

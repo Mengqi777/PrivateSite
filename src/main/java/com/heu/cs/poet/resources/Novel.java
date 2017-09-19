@@ -1,13 +1,11 @@
-package com.heu.cs.poet.api;
+package com.heu.cs.poet.resources;
 
 import com.google.gson.Gson;
 import com.heu.cs.poet.dao.ChapterDao;
 import com.heu.cs.poet.dao.ChapterDaoImpl;
 import com.heu.cs.poet.dao.NovelListDao;
 import com.heu.cs.poet.dao.NovelListDaoImpl;
-import com.heu.cs.poet.pojo.Chapter;
-import com.heu.cs.poet.pojo.Novel;
-import jdk.nashorn.internal.ir.debug.ASTWriter;
+import com.heu.cs.poet.pojo.NovelPojo;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
@@ -22,15 +20,14 @@ import javax.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
 /**
  * Created by memgq on 2017/8/5.
  */
-@Path("novel")
-public class NovelApi {
+@Path("web/novel")
+public class Novel {
 
     @Context
     UriInfo uriInfo;
@@ -46,6 +43,7 @@ public class NovelApi {
     @Produces("text/html;charset=utf-8")
     public String novel() {
         NovelListDao novelListDao = new NovelListDaoImpl();
+        System.out.println(novelListDao.toJson(novelListDao.queryNovelList()));
         return   novelListDao.toJson(novelListDao.queryNovelList());
     }
 
@@ -71,16 +69,6 @@ public class NovelApi {
 
 
 
-    @POST
-    @Path("test")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String test(@FormParam("name")String name, @FormParam("age")String age){
-        System.out.println("name："+name);
-        System.out.println("age:"+age);
-        return "OK Test";
-    }
-
-
     @GET
     @Path("{dbName}")
     @Produces("text/html;charset=utf-8")
@@ -100,7 +88,6 @@ public class NovelApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -189,9 +176,9 @@ public class NovelApi {
     public void addNovel(@QueryParam("name")String name,
                          @QueryParam("dbName")String dbName,
                          @QueryParam("url")String url) {
-        Novel novel=new Novel(name,dbName,url);
+        NovelPojo novelPojo =new NovelPojo(name,dbName,url);
         NovelListDao novelListDao=new NovelListDaoImpl();
-        novelListDao.insertNovel(novel);
+        novelListDao.insertNovel(novelPojo);
         try {
             response.sendRedirect("/web/novel/index");
         } catch (IOException e) {

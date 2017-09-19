@@ -1,15 +1,15 @@
 package com.heu.cs.poet.dao;
 
 
-import com.heu.cs.poet.pojo.Novel;
+import com.heu.cs.poet.pojo.NovelPojo;
 
 import java.util.List;
 
 public interface NovelListDao {
 
 
-    public String toJson(List<Novel> novels);
-    public List<Novel> queryNovelList();
+    public String toJson(List<NovelPojo> novelPojos);
+    public List<NovelPojo> queryNovelList();
 
     public void deleteNovel();
 
@@ -17,5 +17,5 @@ public interface NovelListDao {
 
     public void updateHistory(String dbName,String chapterId,String history);
 
-    public void insertNovel(Novel novel);
+    public void insertNovel(NovelPojo novelPojo);
 }

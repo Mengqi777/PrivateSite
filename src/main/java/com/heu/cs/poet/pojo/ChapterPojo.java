@@ -1,6 +1,6 @@
 package com.heu.cs.poet.pojo;
 
-public class Chapter {
+public class ChapterPojo {
     private String chapterName;
     private int chapterId;
     private String content;
@@ -30,20 +30,20 @@ public class Chapter {
         this.chapterId = chapterId;
     }
 
-    public Chapter(int chapterId,String chapterName){
+    public ChapterPojo(int chapterId, String chapterName){
         super();
         this.chapterId=chapterId;
         this.chapterName=chapterName;
     }
 
-    public Chapter(int chapterId,String chapterName,String content){
+    public ChapterPojo(int chapterId, String chapterName, String content){
         super();
         this.chapterId=chapterId;
         this.chapterName=chapterName;
         this.content=content;
     }
 
-    public Chapter(){
+    public ChapterPojo(){
         super();
     }
 }

@@ -1,11 +1,11 @@
 package com.heu.cs.poet.dao;
 
-import com.heu.cs.poet.pojo.Chapter;
+import com.heu.cs.poet.pojo.ChapterPojo;
 
 public interface ChapterDao {
     public String queryAllChapter(String novelDBName);
-    public Chapter queryChapter(String novelDBName, String chapterId);
-    public Chapter queryPreChapter(String novelDBName, String chapterId);
-    public Chapter queryNextChapter(String novelDBName, String chapterId);
+    public ChapterPojo queryChapter(String novelDBName, String chapterId);
+    public ChapterPojo queryPreChapter(String novelDBName, String chapterId);
+    public ChapterPojo queryNextChapter(String novelDBName, String chapterId);
 
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -58,9 +58,9 @@ function test(event) {
 //    var page_y=window.pageYOffset;
 //    var page_x=window.pageXOffset;
 //    if(y<=(height/2)){
-//        $("html,body").animate({ scrollTop: page_y-height+150 }, 500);
+//        $("#contentdata").animate({ scrollTop: page_y-height+150 }, 500);
 //    }else {
-//        $("html,body").animate({ scrollTop: page_y+height-150 }, 500);
+//        $("#contentdata").animate({ scrollTop: page_y+height-150 }, 500);
 //
 //    }
 }
@@ -86,10 +86,10 @@ function test(event) {
                         var touch_y=event.touches[0].clientY;
                         var page_y=window.pageYOffset;
                         var page_x=window.pageXOffset;
-                        if(y<=(height/2)){
-                            $("html,body").animate({ scrollTop: page_y-height+150 }, 500);
-                        }else {
-                            $("html,body").animate({ scrollTop: page_y+height-150 }, 500);
+                        if(touch_y<=(height/2)){
+                            $("html,body").animate({ scrollTop: page_y-height+150 }, 300);
+                        }else if(touch_y<height-200){
+                            $("html,body").animate({ scrollTop: page_y+height-150 }, 300);
 
                         }
 

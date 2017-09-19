@@ -1,12 +1,21 @@
 package com.heu.cs.poet.pojo;
 
-public class Novel {
+public class NovelPojo {
     private int uuid;
     private String name;
     private String dbName;
     private String url;
     private String history;
     private String historyId;
+    private String fmimg;
+
+    public String getFmimg() {
+        return fmimg;
+    }
+
+    public void setFmimg(String fmimg) {
+        this.fmimg = fmimg;
+    }
 
     public String getHistoryId() {
         return historyId;
@@ -57,7 +66,7 @@ public class Novel {
     }
 
 
-    public Novel(int uuid, String name, String dbName, String url){
+    public NovelPojo(int uuid, String name, String dbName, String url){
         super();
         this.uuid=uuid;
         this.name=name;
@@ -65,7 +74,8 @@ public class Novel {
         this.url=url;
     }
 
-    public Novel(int uuid, String name, String dbName, String url,String history,String historyId){
+
+    public NovelPojo(int uuid, String name, String dbName, String url, String history, String historyId, String fmimg){
         super();
         this.uuid=uuid;
         this.name=name;
@@ -73,9 +83,10 @@ public class Novel {
         this.url=url;
         this.history=history;
         this.historyId=historyId;
+        this.fmimg=fmimg;
     }
 
-    public Novel( String name, String dbName, String url){
+    public NovelPojo(String name, String dbName, String url){
         super();
         this.name=name;
         this.dbName=dbName;
