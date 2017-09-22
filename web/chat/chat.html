@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon"/>
@@ -69,12 +69,6 @@
         <div class="credits">请文明发言，富强民主文明和谐</div>
         <div id="convo">
             <ul class="chat-thread" id="chatcontent">
-                <div></div>
-                <li>ce</li>
-                <div></div>
-                <li>shi</li>
-                <li>shi</li>
-                <div></div>
             </ul>
              <div id="inputwindow">
                 <textarea id="text"  placeholder="输入消息"></textarea>
@@ -182,6 +176,8 @@
         //连接发生错误的回调方法
         websocket.onerror = function () {
             roomInfo.connInfo="WebSocket连接发生错误";
+            roomInfo.onlineCount="当前在线：0 人";
+            userList=[];
         };
         //连接成功建立的回调方法
         websocket.onopen = function () {
@@ -201,7 +197,7 @@
             }else if (data['type']=="chat") {
                 if(data['from']!=nickName){
                     console.log(data);
-                    $("#chatcontent").append("<div></div><li>"+data['data']+"</li>");
+                    $("#chatcontent").append("<div></div><li>"+data['from']+" "+data['time']+"<br/>"+data['data']+"</li>");
                     document.getElementById('chatcontent').scrollTop = document.getElementById('chatcontent').scrollHeight
                 }
 
@@ -213,6 +209,9 @@
         //连接关闭的回调方法
         websocket.onclose = function () {
             roomInfo.connInfo="WebSocket连接关闭";
+            roomInfo.onlineCount="当前在线：0 人";
+            userList=[];
+
         };
         //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
         window.onbeforeunload = function () {
@@ -231,15 +230,18 @@
 
     //发送消息
     function send() {
-        var content = document.getElementById('text').value;
-        if(content!="" || content != undefined){
+        var content =$("#text").val();
+        console.log(content);
+        if(content!=="" && content !== undefined){
             message.data=content;
             message.from=nickName;
             message.time=new Date().format("yyyy-MM-dd hh:mm:ss");
             websocket.send(JSON.stringify(message));
+            $("#chatcontent").append("<li>"+message.from+" "+message.time+"<br/>"+content+"</li><div></div>");
+            document.getElementById('chatcontent').scrollTop = document.getElementById('chatcontent').scrollHeight;
+            $("#text").val("");
         }
-        $("#chatcontent").append("<li>"+content+"</li><div></div>");
-        document.getElementById('chatcontent').scrollTop = document.getElementById('chatcontent').scrollHeight
+
     }
 
 </script>

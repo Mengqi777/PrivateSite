@@ -1,6 +1,7 @@
 package com.heu.cs.poet.jettyserver;
 
 
+import com.heu.cs.poet.resources.WebSocket;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -8,7 +9,10 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.log.Logger;
+import org.eclipse.jetty.util.log.Slf4jLog;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
@@ -75,11 +79,6 @@ public class JettyServer {
         // including things like choosing the particular certificate out of a
         // keystore to be used.
         SslContextFactory sslContextFactory=new SslContextFactory();
-
-//        sslContextFactory.setKeyStorePath(jettyDistKeystore);
-//        sslContextFactory.setKeyStorePassword("OBF:1v8s1x8g1vuh1kqj1kub1vut1x8e1v9u");
-//        sslContextFactory.setKeyManagerPassword("OBF:1v8s1x8g1vuh1kqj1kub1vut1x8e1v9u");
-
         sslContextFactory.setKeyStorePath(jks);
         sslContextFactory.setKeyStorePassword("api.root");
         sslContextFactory.setKeyManagerPassword("api.root");
@@ -150,27 +149,9 @@ public class JettyServer {
         staticServlet.setInitParameter("pathInfoOnly", "true");
         staticServlet.setInitParameter("dirAllowed", "false");
 
-
-        /**
-         * Embedded Jetty还可以直接当作服务器，在上面部署已经发布的war包，这方面的资料国内挺多的，就不累述
-         *
-         * 其次，在我们的项目中是没有用到web.xml文件来进行webappde的配置，因为上面的设置并不能使得服务器访问web.xml，
-         * 如果需要用到web.xml，则需要new一个WebAppContext,并对其进行配置，同时在下面的handlers中加上webAppContext
-         *  WebAppContext webAppContext = new WebAppContext();
-         *  设置描述符位置
-         *  webAppContext.setDescriptor("./web/WEB-INF/web.xml");
-         *  设置Web内容上下文路径
-         *  webAppContext.setResourceBase("./web");
-         *  设置上下文路径
-         *  webAppContext.setContextPath("/");
-         *  webAppContext.setParentLoaderPriority(true);
-         */
-
-
-
+       context.addServlet(WebSocket.class,"/websocket/*");
 
         HandlerCollection handlers = new HandlerCollection();
-        // handlers.setHandlers(new Handler[]{context,webAppContext});
         handlers.setHandlers(new Handler[]{context});
         jettyServer.setHandler(handlers);
         try {
