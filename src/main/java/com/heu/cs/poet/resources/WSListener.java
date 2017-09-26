@@ -9,11 +9,12 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class   WSListener implements WebSocketListener {
+public class WSListener implements WebSocketListener {
     private String nickName;
     private Session session;
     private WSListenserPool listenserPool= WSListenserPool.INSTANCE;
@@ -43,14 +44,14 @@ public class   WSListener implements WebSocketListener {
     @Override
     public void onWebSocketText(String s) {
         ConcurrentHashMap<String, Session> pool = listenserPool.getPool();
-        for(String nickName:pool.keySet()){
+        Collection<Session> values = pool.values();
+        values.forEach(value->{
             try {
-                pool.get(nickName).getRemote().sendString(s);
+                value.getRemote().sendString(s);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
+        });
     }
 
     @Override

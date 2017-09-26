@@ -1,6 +1,5 @@
 package com.heu.cs.poet.pojo;
 
-import com.heu.cs.poet.resources.WSListener;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.concurrent.ConcurrentHashMap;

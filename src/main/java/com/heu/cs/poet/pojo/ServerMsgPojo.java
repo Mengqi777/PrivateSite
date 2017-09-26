@@ -3,8 +3,6 @@ package com.heu.cs.poet.pojo;
 
 import com.google.gson.JsonArray;
 
-import java.util.Set;
-
 public class ServerMsgPojo {
     private String from;
     private String type;

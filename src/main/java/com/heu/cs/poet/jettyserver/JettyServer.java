@@ -6,21 +6,19 @@ import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.FilterHolder;
+
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.log.Logger;
-import org.eclipse.jetty.util.log.Slf4jLog;
+
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerConfig;
+
 import org.glassfish.jersey.server.ServerProperties;
 
-import javax.servlet.DispatcherType;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.EnumSet;
+
 
 public class JettyServer {
 
