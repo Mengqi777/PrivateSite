@@ -189,9 +189,7 @@
         };
         //接收到消息的回调方法
         websocket.onmessage = function (event) {
-            console.log(event);
             var data=JSON.parse(event.data);
-            console.log(data);
             if(data['type']=="userList"){
                 userList=data['data'];
                 console.log(userList);
@@ -200,7 +198,7 @@
                 console.log(roomInfo.userList);
             }else if (data['type']=="chat") {
                 if(data['from']!=nickName){
-                    console.log(data);
+
                     $("#chatcontent").append("<div></div><li>"+data['data']+"</li>");
                     document.getElementById('chatcontent').scrollTop = document.getElementById('chatcontent').scrollHeight
                 }
@@ -220,9 +218,6 @@
         };
     }
 
-
-
-
     //关闭WebSocket连接
     function closeWebSocket() {
         websocket.close();
@@ -232,6 +227,7 @@
     //发送消息
     function send() {
         var content = document.getElementById('text').value;
+        $("#text").val("");
         if(content!="" || content != undefined){
             message.data=content;
             message.from=nickName;
@@ -240,6 +236,7 @@
         }
         $("#chatcontent").append("<li>"+content+"</li><div></div>");
         document.getElementById('chatcontent').scrollTop = document.getElementById('chatcontent').scrollHeight
+
     }
 
 </script>

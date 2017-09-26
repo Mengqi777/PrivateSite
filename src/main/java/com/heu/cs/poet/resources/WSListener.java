@@ -2,35 +2,47 @@ package com.heu.cs.poet.resources;
 
 import com.google.gson.Gson;
 
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.heu.cs.poet.pojo.ServerMsgPojo;
+import com.heu.cs.poet.pojo.WSListenserPool;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketListener;
 
-import javax.json.Json;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class   WSListener implements WebSocketListener {
+    private String nickName;
+    private Session session;
+    private WSListenserPool listenserPool= WSListenserPool.INSTANCE;
+    private String getNickName() {
+        return nickName;
+    }
 
-    /**
-     * 保存已打开的所有WebSocket Session
-     */
-    public static final ConcurrentHashMap<String, Session> pool = new ConcurrentHashMap<String, Session>();
+    private void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    private Session getSession() {
+        return session;
+    }
+
+    private void setSession(Session session) {
+        this.session = session;
+    }
+
+
 
     @Override
     public void onWebSocketBinary(byte[] bytes, int i, int i1) {
-        removeUnavailable();
+
     }
 
     @Override
     public void onWebSocketText(String s) {
-        removeUnavailable();
+        ConcurrentHashMap<String, Session> pool = listenserPool.getPool();
         for(String nickName:pool.keySet()){
             try {
                 pool.get(nickName).getRemote().sendString(s);
@@ -43,15 +55,20 @@ public class   WSListener implements WebSocketListener {
 
     @Override
     public void onWebSocketClose(int i, String s) {
-       removeUnavailable();
+        listenserPool.listenserRemove(this.getNickName(),this.getSession());
+        try {
+            System.out.println("closed and refreshUsers");
+            refreshUsers();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onWebSocketConnect(Session session) {
-        removeUnavailable();
-        String nickName=session.getUpgradeRequest().getParameterMap().get("nickName").toString();
-        pool.put(nickName,session);
-        System.out.println();
+        this.setNickName(session.getUpgradeRequest().getParameterMap().get("nickName").toString());
+        this.setSession(session);
+        listenserPool.listenserAdd(this.nickName,this.session);
         try {
             refreshUsers();
         } catch (IOException e) {
@@ -67,43 +84,31 @@ public class   WSListener implements WebSocketListener {
 
 
     private void refreshUsers() throws IOException {
-        Map<String,Object> msg=new HashMap<>();
+        ConcurrentHashMap<String, Session> pool = listenserPool.getPool();
+        ServerMsgPojo serverMsgPojo=new ServerMsgPojo();
+        Gson gson=new Gson();
+        JsonParser parser=new JsonParser();
         for(String nickName:pool.keySet()){
-            msg.put("session",pool.get(nickName));
-            msg.put("type","userList");
-            msg.put("data",pool.keySet());
-            msg.put("from","server");
-            send(msg);
+            serverMsgPojo.setFrom("server");
+            serverMsgPojo.setType("userList");
+            serverMsgPojo.setData(parser.parse(pool.keySet().toString()).getAsJsonArray());
+            pool.get(nickName).getRemote().sendString(gson.toJson(serverMsgPojo,ServerMsgPojo.class));
         }
     }
 
-    private void send(Map<String, Object> msg) {
-        Session session= (Session) msg.get("session");
-        if(session!=null){
-            ServerMsgPojo serverMsgPojo=new ServerMsgPojo();
-            Gson gson=new Gson();
-            JsonParser parser=new JsonParser();
-            try {
-                serverMsgPojo.setFrom(msg.get("from").toString());
-                serverMsgPojo.setType("userList");
-                serverMsgPojo.setData(parser.parse(pool.keySet().toString()).getAsJsonArray());
-                session.getRemote().sendString(gson.toJson(serverMsgPojo,ServerMsgPojo.class));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    public void removeUnavailable(){
-        List<String> removedKeys = new ArrayList<>();
+
+    private void removeUnavailable(){
+        Map<String,Session> removeMap=new HashMap<>();
+        ConcurrentHashMap<String, Session> pool = listenserPool.getPool();
         for (String key : pool.keySet()) {
             Session session = pool.get(key);
             if (!session.isOpen()) {
-                removedKeys.add(key);
+                removeMap.put(key,session);
             }
         }
-        for (String key : removedKeys) {
-            pool.remove(key);
+        for (String key : removeMap.keySet()) {
+            listenserPool.listenserRemove(key,removeMap.get(key));
         }
     }
 }

@@ -12,6 +12,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.log.Slf4jLog;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerConfig;
 import org.glassfish.jersey.server.ServerProperties;
@@ -151,8 +152,21 @@ public class JettyServer {
 
        context.addServlet(WebSocket.class,"/websocket/*");
 
+
+
+               WebAppContext webAppContext = new WebAppContext();
+        // 设置描述符位置
+        webAppContext.setDescriptor("./web/WEB-INF/web.xml");
+        // 设置Web内容上下文路径
+        webAppContext.setResourceBase("./web");
+//        // 设置上下文路径
+//        appContext.setContextPath("/");
+        webAppContext.setParentLoaderPriority(true);
+
+
+
         HandlerCollection handlers = new HandlerCollection();
-        handlers.setHandlers(new Handler[]{context});
+        handlers.setHandlers(new Handler[]{context,webAppContext});
         jettyServer.setHandler(handlers);
         try {
             jettyServer.start();
